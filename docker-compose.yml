@@ -1,0 +1,25 @@
+version: '3.7'  # Версия Docker Compose
+
+services:
+  bot:  # Сервис нашего бота
+    build: .  # Построение образа из текущей папки
+    container_name: coin_market_cap_checker  # Название
+    env_file:
+      - .env  # Файл с переменными окружения
+    depends_on:
+      - db  # Зависимость от сервиса базы данных
+
+  db:  # Сервис базы данных
+    image: postgres:16  # Используемый образ Postgres версии 16
+    container_name: database_postgres  # Имя контейнера
+    environment:
+      POSTGRES_USER: ${DB_USER}  # Пользователь базы данных
+      POSTGRES_PASSWORD: ${DB_PASS}  # Пароль базы данных
+      POSTGRES_DB: test_coin_market_cap  # Имя базы данных
+    ports:
+      - "5432:5432"  # Проброс порта
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Путь для хранения данных базы данных
+
+volumes:
+  postgres_data:  # Определение тома для данных Postgres
